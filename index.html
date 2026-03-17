@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>작업실 SEOUL — 장비 렌탈</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #0a0a0a;
+      --white: #f5f0e8;
+      --orange: #e85d04;
+      --orange-dark: #c44d00;
+      --gray: #1c1c1c;
+      --gray-mid: #2e2e2e;
+      --text-muted: #888;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 0 60px 0;
+    }
+
+    /* HEADER */
+    .header {
+      width: 100%;
+      background: var(--black);
+      border-bottom: 1px solid #222;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .header-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      letter-spacing: 4px;
+      color: var(--white);
+    }
+    .header-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* CONTAINER */
+    .container {
+      width: 100%;
+      max-width: 480px;
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* STEP SYSTEM */
+    .step { display: none; flex-direction: column; gap: 24px; animation: fadeIn 0.3s ease; }
+    .step.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* PACKAGE CARD */
+    .package-label {
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 8px;
+    }
+    .package-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 42px;
+      letter-spacing: 2px;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .package-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .package-card {
+      background: var(--gray);
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .package-items {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .package-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+    .package-item-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--orange);
+      flex-shrink: 0;
+    }
+    .package-divider {
+      height: 1px;
+      background: #333;
+    }
+    .package-price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .package-price-label { font-size: 12px; color: var(--text-muted); }
+    .package-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      letter-spacing: 1px;
+      color: var(--orange);
+    }
+
+    /* NOTICE */
+    .notice {
+      background: #111;
+      border-left: 3px solid var(--orange);
+      border-radius: 4px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* FORM */
+    .form-label {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: block;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .input-row { display: flex; gap: 8px; }
+
+    input[type="tel"], input[type="text"] {
+      width: 100%;
+      background: var(--gray);
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: var(--white);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 16px;
+      padding: 14px 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--orange); }
+    input::placeholder { color: #555; }
+
+    /* BUTTONS */
+    .btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 8px;
+      border: none;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 1px;
+    }
+    .btn-primary {
+      background: var(--orange);
+      color: var(--white);
+    }
+    .btn-primary:hover { background: var(--orange-dark); }
+    .btn-primary:disabled { background: #333; color: #666; cursor: not-allowed; }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #333;
+      color: var(--text-muted);
+      font-size: 13px;
+      padding: 12px;
+    }
+    .btn-outline:hover { border-color: var(--orange); color: var(--white); }
+    .btn-sm {
+      width: auto;
+      padding: 14px 16px;
+      flex-shrink: 0;
+      white-space: nowrap;
+      font-size: 13px;
+    }
+
+    /* TIMER */
+    .timer {
+      font-size: 12px;
+      color: var(--orange);
+      text-align: right;
+    }
+
+    /* SUCCESS */
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto;
+    }
+    .success-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px;
+      letter-spacing: 3px;
+      text-align: center;
+    }
+    .password-box {
+      background: var(--gray);
+      border: 2px solid var(--orange);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+    }
+    .password-label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .password-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 64px;
+      letter-spacing: 12px;
+      color: var(--orange);
+      line-height: 1;
+    }
+    .password-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+    .sms-notice {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    /* ERROR */
+    .error-msg {
+      font-size: 12px;
+      color: #ff6b6b;
+      display: none;
+    }
+    .error-msg.show { display: block; }
+
+    /* LOADING */
+    .loading {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .loading.show { display: flex; }
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid #333;
+      border-top-color: var(--orange);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* STEP INDICATOR */
+    .step-indicator {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+    .step-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #333;
+      transition: background 0.3s;
+    }
+    .step-dot.active { background: var(--orange); }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-brand">작업실 SEOUL</div>
+  <div class="header-sub">Equipment Rental Service</div>
+</div>
+
+<div class="container">
+
+  <!-- STEP INDICATOR -->
+  <div class="step-indicator" style="margin-bottom: 24px;">
+    <div class="step-dot active" id="dot1"></div>
+    <div class="step-dot" id="dot2"></div>
+    <div class="step-dot" id="dot3"></div>
+  </div>
+
+  <!-- STEP 1: 패키지 안내 + 전화번호 -->
+  <div class="step active" id="step1">
+    <div>
+      <div class="package-label">렌탈 패키지</div>
+      <div class="package-title">WORK<br>SETUP</div>
+      <div class="package-desc">더 넓은 화면, 더 편한 자세로<br>작업에 집중하세요.</div>
+    </div>
+
+    <div class="package-card">
+      <div class="package-items">
+        <div class="package-item">
+          <div class="package-item-dot"></div>
+          <span>듀얼 모니터</span>
+        </div>
+        <div class="package-item">
+          <div class="package-item-dot"></div>
+          <span>노트북 거치대</span>
+        </div>
+        <div class="package-item">
+          <div class="package-item-dot"></div>
+          <span>멀티 충전기</span>
+        </div>
+      </div>
+      <div class="package-divider"></div>
+      <div class="package-price-row">
+        <span class="package-price-label">1회 이용 금액</span>
+        <span class="package-price">4,800원</span>
+      </div>
+    </div>
+
+    <div class="notice">
+      📦 반납 시 패키지 구성품을 가방에 넣고 잠근 후 매대에 가져다 놓아주세요.<br>
+      ⚠️ 미반납 시 분실 처리됩니다.
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">휴대폰 번호</label>
+      <div class="input-row">
+        <input type="tel" id="phone" placeholder="010-0000-0000" maxlength="13" />
+        <button class="btn btn-primary btn-sm" onclick="sendSMS()" id="smsBtn">인증받기</button>
+      </div>
+      <div class="error-msg" id="phoneError">올바른 번호를 입력해주세요.</div>
+      <div class="loading" id="smsLoading"><div class="spinner"></div> 인증번호 발송 중...</div>
+    </div>
+  </div>
+
+  <!-- STEP 2: SMS 인증 -->
+  <div class="step" id="step2">
+    <div>
+      <div class="package-label">인증 확인</div>
+      <div class="package-title">번호<br>확인</div>
+      <div class="package-desc" id="step2Desc">문자로 발송된 인증번호를 입력해주세요.</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">인증번호 6자리</label>
+      <div class="input-row">
+        <input type="text" id="verifyCode" placeholder="000000" maxlength="6" inputmode="numeric" />
+        <button class="btn btn-primary btn-sm" onclick="verifyCode()">확인</button>
+      </div>
+      <div class="timer" id="timer">3:00</div>
+      <div class="error-msg" id="codeError">인증번호가 올바르지 않습니다.</div>
+      <div class="loading" id="verifyLoading"><div class="spinner"></div> 확인 중...</div>
+    </div>
+
+    <button class="btn btn-outline" onclick="resendSMS()">인증번호 재발송</button>
+    <button class="btn btn-outline" onclick="goStep(1)">← 이전으로</button>
+  </div>
+
+  <!-- STEP 3: 결제 -->
+  <div class="step" id="step3">
+    <div>
+      <div class="package-label">결제</div>
+      <div class="package-title">최종<br>결제</div>
+      <div class="package-desc">아래 버튼을 눌러 결제를 완료해주세요.<br>결제 완료 후 비밀번호가 문자로 발송됩니다.</div>
+    </div>
+
+    <div class="package-card">
+      <div class="package-items">
+        <div class="package-item"><div class="package-item-dot"></div><span>듀얼 모니터</span></div>
+        <div class="package-item"><div class="package-item-dot"></div><span>노트북 거치대</span></div>
+        <div class="package-item"><div class="package-item-dot"></div><span>멀티 충전기</span></div>
+      </div>
+      <div class="package-divider"></div>
+      <div class="package-price-row">
+        <span class="package-price-label">결제 금액</span>
+        <span class="package-price">4,800원</span>
+      </div>
+    </div>
+
+    <div class="loading" id="payLoading"><div class="spinner"></div> 결제 준비 중...</div>
+    <button class="btn btn-primary" onclick="requestPayment()" id="payBtn">4,800원 결제하기</button>
+    <button class="btn btn-outline" onclick="goStep(1)">← 처음으로</button>
+  </div>
+
+  <!-- STEP 4: 완료 -->
+  <div class="step" id="step4">
+    <div class="success-icon">✓</div>
+    <div class="success-title">결제 완료</div>
+
+    <div class="password-box">
+      <div class="password-label">007 가방 비밀번호</div>
+      <div class="password-number" id="passwordDisplay">----</div>
+      <div class="password-hint">위 번호로 가방을 열어 패키지를 꺼내주세요.<br>비밀번호는 문자로도 발송됩니다.</div>
+    </div>
+
+    <div class="sms-notice" id="smsConfirm">📱 등록하신 번호로 비밀번호를 문자 발송했습니다.</div>
+
+    <div class="notice">
+      ✅ 반납 시 구성품을 가방에 넣고 잠근 후<br>매대에 가져다 놓아주세요.<br>
+      ✅ 문의사항은 매장 안내문을 참고해주세요.
+    </div>
+  </div>
+
+</div>
+
+<!-- 토스페이먼츠 SDK -->
+<script src="https://js.tosspayments.com/v2/standard"></script>
+
+<script>
+  // ============================================
+  // 설정값 (여기만 수정하면 됩니다)
+  // ============================================
+  const CONFIG = {
+    TOSS_CLIENT_KEY: "test_gck_Gv6LjeKD8aYLy4gM2JqB8wYxAdXy", // 토스 클라이언트 키
+    PACKAGE_PRICE: 4800,
+    PACKAGE_NAME: "작업실 SEOUL 렌탈 패키지",
+    PASSWORD: "1234", // 007가방 비밀번호 (매주 QC 때 여기 수정)
+    SERVER_URL: "", // 배포 후 Vercel URL 입력
+  };
+
+  let userPhone = "";
+  let timerInterval = null;
+
+  // 전화번호 포맷
+  document.getElementById("phone").addEventListener("input", function(e) {
+    let val = e.target.value.replace(/\D/g, "");
+    if (val.length > 11) val = val.slice(0, 11);
+    if (val.length >= 8) val = val.slice(0,3) + "-" + val.slice(3,7) + "-" + val.slice(7);
+    else if (val.length >= 4) val = val.slice(0,3) + "-" + val.slice(3);
+    e.target.value = val;
+  });
+
+  // 스텝 이동
+  function goStep(n) {
+    document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+    document.getElementById("step" + n).classList.add("active");
+    document.querySelectorAll(".step-dot").forEach((d, i) => {
+      d.classList.toggle("active", i < n);
+    });
+    window.scrollTo(0, 0);
+  }
+
+  // SMS 발송
+  async function sendSMS() {
+    const phone = document.getElementById("phone").value.replace(/-/g, "");
+    const err = document.getElementById("phoneError");
+    const loading = document.getElementById("smsLoading");
+
+    if (!/^010\d{8}$/.test(phone)) {
+      err.classList.add("show");
+      return;
+    }
+    err.classList.remove("show");
+    userPhone = phone;
+
+    document.getElementById("smsBtn").disabled = true;
+    loading.classList.add("show");
+
+    try {
+      const res = await fetch(CONFIG.SERVER_URL + "/api/send-sms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        loading.classList.remove("show");
+        document.getElementById("step2Desc").textContent = phone.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3") + " 으로 인증번호를 발송했습니다.";
+        goStep(2);
+        startTimer();
+      } else {
+        throw new Error("발송 실패");
+      }
+    } catch(e) {
+      loading.classList.remove("show");
+      document.getElementById("smsBtn").disabled = false;
+      alert("인증번호 발송에 실패했습니다. 다시 시도해주세요.");
+    }
+  }
+
+  // 타이머
+  function startTimer() {
+    let sec = 180;
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      sec--;
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      document.getElementById("timer").textContent = m + ":" + String(s).padStart(2, "0");
+      if (sec <= 0) { clearInterval(timerInterval); document.getElementById("timer").textContent = "만료됨"; }
+    }, 1000);
+  }
+
+  // 인증번호 확인
+  async function verifyCode() {
+    const code = document.getElementById("verifyCode").value;
+    const err = document.getElementById("codeError");
+    const loading = document.getElementById("verifyLoading");
+
+    if (code.length !== 6) { err.classList.add("show"); return; }
+    err.classList.remove("show");
+    loading.classList.add("show");
+
+    try {
+      const res = await fetch(CONFIG.SERVER_URL + "/api/verify-sms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: userPhone, code }),
+      });
+      const data = await res.json();
+      loading.classList.remove("show");
+      if (data.success) {
+        clearInterval(timerInterval);
+        goStep(3);
+      } else {
+        err.classList.add("show");
+      }
+    } catch(e) {
+      loading.classList.remove("show");
+      alert("확인에 실패했습니다. 다시 시도해주세요.");
+    }
+  }
+
+  // 재발송
+  function resendSMS() {
+    document.getElementById("verifyCode").value = "";
+    sendSMS();
+    goStep(2);
+  }
+
+  // 토스 결제
+  async function requestPayment() {
+    const payBtn = document.getElementById("payBtn");
+    const loading = document.getElementById("payLoading");
+    payBtn.style.display = "none";
+    loading.classList.add("show");
+
+    try {
+      const tossPayments = TossPayments(CONFIG.TOSS_CLIENT_KEY);
+      const payment = tossPayments.payment({ customerKey: "customer_" + userPhone });
+
+      await payment.requestPayment({
+        method: "CARD",
+        amount: { currency: "KRW", value: CONFIG.PACKAGE_PRICE },
+        orderId: "order_" + Date.now(),
+        orderName: CONFIG.PACKAGE_NAME,
+        successUrl: window.location.origin + "/success?phone=" + userPhone,
+        failUrl: window.location.origin + "/fail",
+        customerMobilePhone: userPhone,
+      });
+    } catch(e) {
+      loading.classList.remove("show");
+      payBtn.style.display = "block";
+      if (e.code !== "USER_CANCEL") {
+        alert("결제 중 오류가 발생했습니다.");
+      }
+    }
+  }
+</script>
+
+</body>
+</html>

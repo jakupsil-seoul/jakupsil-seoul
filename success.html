@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>결제 완료 — 작업실 SEOUL</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #0a0a0a;
+      --white: #f5f0e8;
+      --orange: #e85d04;
+      --gray: #1c1c1c;
+      --text-muted: #888;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 60px 0;
+    }
+    .header {
+      width: 100%;
+      background: var(--black);
+      border-bottom: 1px solid #222;
+      padding: 20px 24px;
+    }
+    .header-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      letter-spacing: 4px;
+    }
+    .header-sub { font-size: 11px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
+    .container {
+      width: 100%;
+      max-width: 480px;
+      padding: 40px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      align-items: center;
+    }
+    .success-icon {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      animation: pop 0.4s ease;
+    }
+    @keyframes pop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    .success-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 42px;
+      letter-spacing: 3px;
+      text-align: center;
+    }
+    .password-box {
+      width: 100%;
+      background: var(--gray);
+      border: 2px solid var(--orange);
+      border-radius: 16px;
+      padding: 32px 24px;
+      text-align: center;
+      animation: fadeIn 0.5s ease 0.2s both;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .password-label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .password-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 80px;
+      letter-spacing: 16px;
+      color: var(--orange);
+      line-height: 1;
+    }
+    .password-hint {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 14px;
+      line-height: 1.7;
+    }
+    .notice {
+      width: 100%;
+      background: #111;
+      border-left: 3px solid var(--orange);
+      border-radius: 4px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+    .sms-badge {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      width: 100%;
+    }
+    .loading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid #333;
+      border-top-color: var(--orange);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-box {
+      width: 100%;
+      background: #1a0000;
+      border: 1px solid #ff4444;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      font-size: 13px;
+      color: #ff6b6b;
+      line-height: 1.6;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-brand">작업실 SEOUL</div>
+  <div class="header-sub">Equipment Rental Service</div>
+</div>
+
+<div class="container">
+
+  <div id="loadingState" class="loading">
+    <div class="spinner"></div> 결제 확인 중...
+  </div>
+
+  <div id="successState" style="display:none; width:100%; display:none; flex-direction:column; gap:24px; align-items:center;">
+    <div class="success-icon">✓</div>
+    <div class="success-title">결제 완료</div>
+
+    <div class="password-box">
+      <div class="password-label">007 가방 비밀번호</div>
+      <div class="password-number" id="passwordDisplay">----</div>
+      <div class="password-hint">위 번호로 가방을 열어<br>패키지를 꺼내주세요.</div>
+    </div>
+
+    <div class="sms-badge" id="smsBadge">📱 등록하신 번호로 비밀번호를 문자 발송했습니다.</div>
+
+    <div class="notice">
+      ✅ 반납 시 구성품을 가방에 넣고 잠근 후 매대에 가져다 놓아주세요.<br>
+      ✅ 미반납 시 분실 처리될 수 있습니다.<br>
+      ✅ 문의사항은 매장 안내문을 참고해주세요.
+    </div>
+  </div>
+
+  <div class="error-box" id="errorState">
+    결제 확인 중 오류가 발생했습니다.<br>
+    문의: 매장 안내문을 참고해주세요.
+  </div>
+
+</div>
+
+<script>
+  const SERVER_URL = ""; // 배포 후 Vercel URL 입력
+
+  async function confirmPayment() {
+    const params = new URLSearchParams(window.location.search);
+    const paymentKey = params.get("paymentKey");
+    const orderId = params.get("orderId");
+    const amount = params.get("amount");
+    const phone = params.get("phone");
+
+    if (!paymentKey || !orderId || !amount) {
+      showError();
+      return;
+    }
+
+    try {
+      const res = await fetch(SERVER_URL + "/api/confirm-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentKey, orderId, amount, phone }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        document.getElementById("loadingState").style.display = "none";
+        document.getElementById("passwordDisplay").textContent = data.password;
+        document.getElementById("successState").style.display = "flex";
+      } else {
+        showError();
+      }
+    } catch(e) {
+      showError();
+    }
+  }
+
+  function showError() {
+    document.getElementById("loadingState").style.display = "none";
+    document.getElementById("errorState").style.display = "block";
+  }
+
+  confirmPayment();
+</script>
+
+</body>
+</html>
