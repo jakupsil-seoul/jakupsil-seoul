@@ -1,5 +1,10 @@
 // api/send-sms.js
-// SMS 인증번호 발송
+import { Redis } from "@upstash/redis";
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
@@ -10,26 +15,18 @@ export default async function handler(req, res) {
     return res.status(400).json({ success: false, message: "올바르지 않은 번호" });
   }
 
-  // 6자리 인증번호 생성
   const code = String(Math.floor(100000 + Math.random() * 900000));
 
-  // 인증번호를 임시 저장 (Vercel KV 또는 메모리)
-  // 실제 운영시에는 Vercel KV 사용 권장
-  global.smsCodes = global.smsCodes || {};
-  global.smsCodes[phone] = {
-    code,
-    expiry: Date.now() + 3 * 60 * 1000, // 3분
-  };
+  // Redis에 인증번호 저장 (3분 만료)
+  await redis.set(`sms:${phone}`, code, { ex: 180 });
 
-  // 솔라피로 SMS 발송
   try {
     const SOLAPI_KEY = process.env.SOLAPI_API_KEY;
     const SOLAPI_SECRET = process.env.SOLAPI_API_SECRET;
-    const SENDER_PHONE = process.env.SENDER_PHONE; // 발신번호
+    const SENDER_PHONE = process.env.SENDER_PHONE;
 
     const date = new Date().toISOString();
     const salt = Math.random().toString(36).substring(2);
-    
     const crypto = await import("crypto");
     const signature = crypto.default
       .createHmac("sha256", SOLAPI_SECRET)
