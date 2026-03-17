@@ -58,6 +58,7 @@
     .step-indicator { display: flex; gap: 6px; justify-content: center; margin-bottom: 8px; }
     .step-dot { width: 6px; height: 6px; border-radius: 50%; background: #333; transition: background 0.3s; }
     .step-dot.active { background: var(--orange); }
+    #payment-method { margin: 0; }
   </style>
 </head>
 <body>
@@ -71,6 +72,8 @@
     <div class="step-dot" id="dot2"></div>
     <div class="step-dot" id="dot3"></div>
   </div>
+
+  <!-- STEP 1 -->
   <div class="step active" id="step1">
     <div>
       <div class="package-label">렌탈 패키지</div>
@@ -103,6 +106,8 @@
       <div class="loading" id="smsLoading"><div class="spinner"></div> 인증번호 발송 중...</div>
     </div>
   </div>
+
+  <!-- STEP 2 -->
   <div class="step" id="step2">
     <div>
       <div class="package-label">인증 확인</div>
@@ -122,6 +127,8 @@
     <button class="btn btn-outline" onclick="resendSMS()">인증번호 재발송</button>
     <button class="btn btn-outline" onclick="goStep(1)">← 이전으로</button>
   </div>
+
+  <!-- STEP 3 -->
   <div class="step" id="step3">
     <div>
       <div class="package-label">결제</div>
@@ -140,21 +147,24 @@
         <span class="package-price">4,800원</span>
       </div>
     </div>
+    <div id="payment-method"></div>
+    <div id="agreement"></div>
     <div class="loading" id="payLoading"><div class="spinner"></div> 결제 준비 중...</div>
     <button class="btn btn-primary" onclick="requestPayment()" id="payBtn">4,800원 결제하기</button>
     <button class="btn btn-outline" onclick="goStep(1)">← 처음으로</button>
   </div>
 </div>
-<script src="https://js.tosspayments.com/v1"></script>
+
+<script src="https://js.tosspayments.com/v2/standard"></script>
 <script>
-  const CONFIG = {
-    TOSS_CLIENT_KEY: "test_ck_Z61JOxRQVE1vd2bEXDB2VW0X9bAq",
-    PACKAGE_PRICE: 4800,
-    PACKAGE_NAME: "작업실 SEOUL 렌탈 패키지",
-    SERVER_URL: "https://jakupsil-seoul.vercel.app",
-  };
+  const SERVER_URL = "https://jakupsil-seoul.vercel.app";
+  const TOSS_CLIENT_KEY = "test_gck_Gv6LjeKD8aYLy4gM2JqB8wYxAdXy";
+  const PACKAGE_PRICE = 4800;
+  const PACKAGE_NAME = "작업실 SEOUL 렌탈 패키지";
+
   let userPhone = "";
   let timerInterval = null;
+  let widgets = null;
 
   document.getElementById("phone").addEventListener("input", function(e) {
     let val = e.target.value.replace(/\D/g, "");
@@ -169,6 +179,23 @@
     document.getElementById("step" + n).classList.add("active");
     document.querySelectorAll(".step-dot").forEach((d, i) => { d.classList.toggle("active", i < n); });
     window.scrollTo(0, 0);
+    if (n === 3) initPaymentWidget();
+  }
+
+  async function initPaymentWidget() {
+    try {
+      const tossPayments = TossPayments(TOSS_CLIENT_KEY);
+      widgets = tossPayments.widgets({ customerKey: TossPayments.ANONYMOUS });
+      await widgets.setAmount({ currency: "KRW", value: PACKAGE_PRICE });
+      await Promise.all([
+        widgets.renderPaymentMethods({ selector: "#payment-method", variantKey: "DEFAULT" }),
+        widgets.renderAgreement({ selector: "#agreement", variantKey: "AGREEMENT" }),
+      ]);
+      document.getElementById("payBtn").style.display = "block";
+      document.getElementById("payLoading").classList.remove("show");
+    } catch(e) {
+      console.error("결제 위젯 초기화 실패:", e);
+    }
   }
 
   async function sendSMS() {
@@ -181,7 +208,7 @@
     document.getElementById("smsBtn").disabled = true;
     loading.classList.add("show");
     try {
-      const res = await fetch(CONFIG.SERVER_URL + "/api/send-sms", {
+      const res = await fetch(SERVER_URL + "/api/send-sms", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone }),
@@ -220,7 +247,7 @@
     err.classList.remove("show");
     loading.classList.add("show");
     try {
-      const res = await fetch(CONFIG.SERVER_URL + "/api/verify-sms", {
+      const res = await fetch(SERVER_URL + "/api/verify-sms", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone: userPhone, code }),
@@ -242,23 +269,15 @@
   }
 
   async function requestPayment() {
-    const payBtn = document.getElementById("payBtn");
-    const loading = document.getElementById("payLoading");
-    payBtn.style.display = "none";
-    loading.classList.add("show");
     try {
-      const tossPayments = TossPayments(CONFIG.TOSS_CLIENT_KEY);
-      await tossPayments.requestPayment("CARD", {
-        amount: CONFIG.PACKAGE_PRICE,
+      await widgets.requestPayment({
         orderId: "order_" + Date.now(),
-        orderName: CONFIG.PACKAGE_NAME,
+        orderName: PACKAGE_NAME,
         customerMobilePhone: userPhone,
         successUrl: "https://jakupsil-seoul.vercel.app/success?phone=" + userPhone,
         failUrl: "https://jakupsil-seoul.vercel.app/",
       });
     } catch(e) {
-      loading.classList.remove("show");
-      payBtn.style.display = "block";
       if (e.code !== "USER_CANCEL") {
         alert("결제 중 오류가 발생했습니다: " + e.message);
       }
