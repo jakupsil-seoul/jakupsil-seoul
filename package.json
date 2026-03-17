@@ -1,0 +1,8 @@
+json
+{
+  "name": "jakupsil-seoul-rental",
+  "version": "1.0.0",
+  "dependencies": {
+    "@upstash/redis": "^1.28.0"
+  }
+}
