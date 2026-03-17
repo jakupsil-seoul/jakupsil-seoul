@@ -248,7 +248,7 @@
     loading.classList.add("show");
     try {
       const tossPayments = TossPayments(CONFIG.TOSS_CLIENT_KEY);
-      await tossPayments.requestPayment("카드", {
+      await tossPayments.requestPayment("CARD", {
         amount: CONFIG.PACKAGE_PRICE,
         orderId: "order_" + Date.now(),
         orderName: CONFIG.PACKAGE_NAME,
