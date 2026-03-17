@@ -58,7 +58,11 @@
     .step-indicator { display: flex; gap: 6px; justify-content: center; margin-bottom: 8px; }
     .step-dot { width: 6px; height: 6px; border-radius: 50%; background: #333; transition: background 0.3s; }
     .step-dot.active { background: var(--orange); }
-    #payment-method { margin: 0; }
+    .payment-methods { display: flex; flex-direction: column; gap: 10px; }
+    .pay-method-btn { background: var(--gray); border: 1px solid #333; border-radius: 10px; padding: 14px 18px; color: var(--white); font-family: 'Noto Sans KR', sans-serif; font-size: 14px; cursor: pointer; text-align: left; transition: border-color 0.2s; display: flex; align-items: center; gap: 10px; }
+    .pay-method-btn:hover { border-color: var(--orange); }
+    .pay-method-btn.selected { border-color: var(--orange); background: #1f1205; }
+    .pay-method-icon { font-size: 20px; }
   </style>
 </head>
 <body>
@@ -68,9 +72,9 @@
 </div>
 <div class="container">
   <div class="step-indicator" style="margin-bottom: 24px;">
-    <div class="step-dot active" id="dot1"></div>
-    <div class="step-dot" id="dot2"></div>
-    <div class="step-dot" id="dot3"></div>
+    <div class="step-dot active"></div>
+    <div class="step-dot"></div>
+    <div class="step-dot"></div>
   </div>
 
   <!-- STEP 1 -->
@@ -133,7 +137,7 @@
     <div>
       <div class="package-label">결제</div>
       <div class="package-title">최종<br>결제</div>
-      <div class="package-desc">아래 버튼을 눌러 결제를 완료해주세요.<br>결제 완료 후 비밀번호가 문자로 발송됩니다.</div>
+      <div class="package-desc">결제 수단을 선택하고 결제를 완료해주세요.<br>결제 완료 후 비밀번호가 문자로 발송됩니다.</div>
     </div>
     <div class="package-card">
       <div class="package-items">
@@ -147,24 +151,37 @@
         <span class="package-price">4,800원</span>
       </div>
     </div>
-    <div id="payment-method"></div>
-    <div id="agreement"></div>
-    <div class="loading" id="payLoading"><div class="spinner"></div> 결제 준비 중...</div>
+    <div>
+      <label class="form-label" style="margin-bottom:12px;">결제 수단 선택</label>
+      <div class="payment-methods">
+        <button class="pay-method-btn selected" id="method-card" onclick="selectMethod('카드')">
+          <span class="pay-method-icon">💳</span> 신용 · 체크카드
+        </button>
+        <button class="pay-method-btn" id="method-transfer" onclick="selectMethod('계좌이체')">
+          <span class="pay-method-icon">🏦</span> 계좌이체
+        </button>
+        <button class="pay-method-btn" id="method-phone" onclick="selectMethod('휴대폰')">
+          <span class="pay-method-icon">📱</span> 휴대폰 소액결제
+        </button>
+      </div>
+    </div>
+    <div class="loading" id="payLoading"><div class="spinner"></div> 결제창 연결 중...</div>
     <button class="btn btn-primary" onclick="requestPayment()" id="payBtn">4,800원 결제하기</button>
     <button class="btn btn-outline" onclick="goStep(1)">← 처음으로</button>
   </div>
 </div>
 
-<script src="https://js.tosspayments.com/v2/standard"></script>
+<script src="https://js.tosspayments.com/v1/payment"></script>
 <script>
   const SERVER_URL = "https://jakupsil-seoul.vercel.app";
-  const TOSS_CLIENT_KEY = "test_gck_Gv6LjeKD8aYLy4gM2JqB8wYxAdXy";
+  const TOSS_CLIENT_KEY = "test_ck_XZYkKL4MrjoA5wYqGkWa80zJwlEW";
   const PACKAGE_PRICE = 4800;
   const PACKAGE_NAME = "작업실 SEOUL 렌탈 패키지";
 
   let userPhone = "";
   let timerInterval = null;
-  let widgets = null;
+  let selectedMethod = "카드";
+  let tossPayments = null;
 
   document.getElementById("phone").addEventListener("input", function(e) {
     let val = e.target.value.replace(/\D/g, "");
@@ -174,27 +191,74 @@
     e.target.value = val;
   });
 
+  function selectMethod(method) {
+    selectedMethod = method;
+    document.querySelectorAll(".pay-method-btn").forEach(btn => btn.classList.remove("selected"));
+    const map = { "카드": "method-card", "계좌이체": "method-transfer", "휴대폰": "method-phone" };
+    document.getElementById(map[method]).classList.add("selected");
+  }
+
   function goStep(n) {
     document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
     document.getElementById("step" + n).classList.add("active");
     document.querySelectorAll(".step-dot").forEach((d, i) => { d.classList.toggle("active", i < n); });
     window.scrollTo(0, 0);
-    if (n === 3) initPaymentWidget();
+    if (n === 3) initToss();
   }
 
-  async function initPaymentWidget() {
+  function initToss() {
     try {
-      const tossPayments = TossPayments(TOSS_CLIENT_KEY);
-      widgets = tossPayments.widgets({ customerKey: TossPayments.ANONYMOUS });
-      await widgets.setAmount({ currency: "KRW", value: PACKAGE_PRICE });
-      await Promise.all([
-        widgets.renderPaymentMethods({ selector: "#payment-method", variantKey: "DEFAULT" }),
-        widgets.renderAgreement({ selector: "#agreement", variantKey: "AGREEMENT" }),
-      ]);
-      document.getElementById("payBtn").style.display = "block";
-      document.getElementById("payLoading").classList.remove("show");
+      tossPayments = TossPayments(TOSS_CLIENT_KEY);
     } catch(e) {
-      console.error("결제 위젯 초기화 실패:", e);
+      alert("결제 초기화 실패: " + e.message);
+    }
+  }
+
+  async function requestPayment() {
+    if (!tossPayments) {
+      alert("결제 초기화 중입니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
+    const orderId = "order_" + Date.now();
+    const payLoading = document.getElementById("payLoading");
+    const payBtn = document.getElementById("payBtn");
+    payLoading.classList.add("show");
+    payBtn.disabled = true;
+
+    try {
+      const methodMap = {
+        "카드": tossPayments.requestPayment("카드", {
+          amount: PACKAGE_PRICE,
+          orderId: orderId,
+          orderName: PACKAGE_NAME,
+          customerMobilePhone: userPhone,
+          successUrl: SERVER_URL + "/success?phone=" + userPhone,
+          failUrl: SERVER_URL + "/",
+        }),
+        "계좌이체": tossPayments.requestPayment("계좌이체", {
+          amount: PACKAGE_PRICE,
+          orderId: orderId,
+          orderName: PACKAGE_NAME,
+          customerMobilePhone: userPhone,
+          successUrl: SERVER_URL + "/success?phone=" + userPhone,
+          failUrl: SERVER_URL + "/",
+        }),
+        "휴대폰": tossPayments.requestPayment("휴대폰", {
+          amount: PACKAGE_PRICE,
+          orderId: orderId,
+          orderName: PACKAGE_NAME,
+          customerMobilePhone: userPhone,
+          successUrl: SERVER_URL + "/success?phone=" + userPhone,
+          failUrl: SERVER_URL + "/",
+        }),
+      };
+      await methodMap[selectedMethod];
+    } catch(e) {
+      payLoading.classList.remove("show");
+      payBtn.disabled = false;
+      if (e.code !== "USER_CANCEL") {
+        alert("결제 중 오류가 발생했습니다: " + e.message);
+      }
     }
   }
 
@@ -266,22 +330,6 @@
     document.getElementById("verifyCode").value = "";
     document.getElementById("smsBtn").disabled = false;
     sendSMS();
-  }
-
-  async function requestPayment() {
-    try {
-      await widgets.requestPayment({
-        orderId: "order_" + Date.now(),
-        orderName: PACKAGE_NAME,
-        customerMobilePhone: userPhone,
-        successUrl: "https://jakupsil-seoul.vercel.app/success?phone=" + userPhone,
-        failUrl: "https://jakupsil-seoul.vercel.app/",
-      });
-    } catch(e) {
-      if (e.code !== "USER_CANCEL") {
-        alert("결제 중 오류가 발생했습니다: " + e.message);
-      }
-    }
   }
 </script>
 </body>
