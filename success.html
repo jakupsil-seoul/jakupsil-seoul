@@ -154,7 +154,7 @@
     <div class="spinner"></div> 결제 확인 중...
   </div>
 
-  <div id="successState" style="display:none; width:100%; display:none; flex-direction:column; gap:24px; align-items:center;">
+  <div id="successState" style="display:none; width:100%; flex-direction:column; gap:24px; align-items:center;">
     <div class="success-icon">✓</div>
     <div class="success-title">결제 완료</div>
 
@@ -181,7 +181,7 @@
 </div>
 
 <script>
-  const SERVER_URL = ""; // 배포 후 Vercel URL 입력
+  const SERVER_URL = "https://jakupsil-seoul.vercel.app";
 
   async function confirmPayment() {
     const params = new URLSearchParams(window.location.search);
@@ -199,14 +199,15 @@
       const res = await fetch(SERVER_URL + "/api/confirm-payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ paymentKey, orderId, amount, phone }),
+        body: JSON.stringify({ paymentKey, orderId, amount: Number(amount), phone }),
       });
       const data = await res.json();
 
       if (data.success) {
         document.getElementById("loadingState").style.display = "none";
         document.getElementById("passwordDisplay").textContent = data.password;
-        document.getElementById("successState").style.display = "flex";
+        const successEl = document.getElementById("successState");
+        successEl.style.display = "flex";
       } else {
         showError();
       }
