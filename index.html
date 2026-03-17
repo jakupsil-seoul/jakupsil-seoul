@@ -145,7 +145,7 @@
     <button class="btn btn-outline" onclick="goStep(1)">← 처음으로</button>
   </div>
 </div>
-<script src="https://js.tosspayments.com/v2/standard"></script>
+<script src="https://js.tosspayments.com/v1/payment"></script>
 <script>
   const CONFIG = {
     TOSS_CLIENT_KEY: "test_gck_Gv6LjeKD8aYLy4gM2JqB8wYxAdXy",
@@ -155,6 +155,7 @@
   };
   let userPhone = "";
   let timerInterval = null;
+
   document.getElementById("phone").addEventListener("input", function(e) {
     let val = e.target.value.replace(/\D/g, "");
     if (val.length > 11) val = val.slice(0, 11);
@@ -162,12 +163,14 @@
     else if (val.length >= 4) val = val.slice(0,3) + "-" + val.slice(3);
     e.target.value = val;
   });
+
   function goStep(n) {
     document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
     document.getElementById("step" + n).classList.add("active");
     document.querySelectorAll(".step-dot").forEach((d, i) => { d.classList.toggle("active", i < n); });
     window.scrollTo(0, 0);
   }
+
   async function sendSMS() {
     const phone = document.getElementById("phone").value.replace(/-/g, "");
     const err = document.getElementById("phoneError");
@@ -196,6 +199,7 @@
       alert("인증번호 발송에 실패했습니다. 다시 시도해주세요.");
     }
   }
+
   function startTimer() {
     let sec = 180;
     clearInterval(timerInterval);
@@ -207,6 +211,7 @@
       if (sec <= 0) { clearInterval(timerInterval); document.getElementById("timer").textContent = "만료됨"; }
     }, 1000);
   }
+
   async function verifyCode() {
     const code = document.getElementById("verifyCode").value;
     const err = document.getElementById("codeError");
@@ -229,11 +234,13 @@
       alert("확인에 실패했습니다. 다시 시도해주세요.");
     }
   }
+
   function resendSMS() {
     document.getElementById("verifyCode").value = "";
+    document.getElementById("smsBtn").disabled = false;
     sendSMS();
-    goStep(2);
   }
+
   async function requestPayment() {
     const payBtn = document.getElementById("payBtn");
     const loading = document.getElementById("payLoading");
@@ -241,20 +248,20 @@
     loading.classList.add("show");
     try {
       const tossPayments = TossPayments(CONFIG.TOSS_CLIENT_KEY);
-      const payment = tossPayments.payment({ customerKey: "customer_" + userPhone });
-      await payment.requestPayment({
-        method: "CARD",
-        amount: { currency: "KRW", value: CONFIG.PACKAGE_PRICE },
+      await tossPayments.requestPayment("카드", {
+        amount: CONFIG.PACKAGE_PRICE,
         orderId: "order_" + Date.now(),
         orderName: CONFIG.PACKAGE_NAME,
+        customerMobilePhone: userPhone,
         successUrl: "https://jakupsil-seoul.vercel.app/success?phone=" + userPhone,
         failUrl: "https://jakupsil-seoul.vercel.app/",
-        customerMobilePhone: userPhone,
       });
     } catch(e) {
       loading.classList.remove("show");
       payBtn.style.display = "block";
-      if (e.code !== "USER_CANCEL") { alert("결제 중 오류가 발생했습니다."); }
+      if (e.code !== "USER_CANCEL") {
+        alert("결제 중 오류가 발생했습니다: " + e.message);
+      }
     }
   }
 </script>
