@@ -36,7 +36,7 @@
     .hero-bg { width: 100%; height: auto; display: block; }
     .hero-overlay { position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: linear-gradient(to bottom, transparent, var(--black)); }
     .logo-wrap { width: 100%; display: flex; flex-direction: column; align-items: center; padding: 24px 0 20px; background: var(--black); }
-    .logo-img { height: 160px; width: auto; }
+    .logo-img { height: 240px; width: auto; }
     .step-dots { display: flex; gap: 8px; justify-content: center; padding: 0 0 28px; background: var(--black); }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gray-mid); transition: background 0.3s; }
     .dot.active { background: var(--cream); }
@@ -46,17 +46,38 @@
     @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
     .section-title { font-size: 22px; font-weight: 700; color: var(--cream); margin-bottom: 4px; }
     .section-subtitle { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); }
-    .kit-card { background: var(--gray-dark); border: 1px solid var(--cream-border); border-radius: 14px; padding: 20px; display: flex; gap: 16px; align-items: flex-start; }
-    .kit-info { flex: 1; }
+
+    /* ── 키트 카드 ── */
+    .kit-card {
+      background: var(--gray-dark);
+      border: 1px solid var(--cream-border);
+      border-radius: 14px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .kit-card-inner {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .kit-info { flex: 1; position: relative; z-index: 1; }
     .kit-label { font-size: 10px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
     .kit-items { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
     .kit-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--cream); }
     .kit-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--cream); flex-shrink: 0; }
-    .kit-divider { height: 1px; background: var(--cream-border); margin-bottom: 12px; }
+    .kit-divider { height: 1px; background: var(--cream-border); margin-bottom: 12px; clear: both; }
     .kit-price-row { display: flex; justify-content: space-between; align-items: center; }
     .kit-price-label { font-size: 11px; color: var(--text-muted); }
     .kit-price { font-size: 24px; font-weight: 900; color: var(--cream); letter-spacing: -0.5px; }
-    .bag-img { width: 100px; height: 100px; object-fit: contain; flex-shrink: 0; }
+    .bag-img {
+      width: 110px;
+      height: 110px;
+      object-fit: contain;
+      flex-shrink: 0;
+      mix-blend-mode: lighten;
+    }
+
     .fade-in { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
     .notice { background: #0d0d00; border-left: 3px solid var(--cream); border-radius: 4px; padding: 14px 16px; font-size: 12px; color: #999; line-height: 1.8; }
@@ -89,17 +110,6 @@
     .loading.show { display: flex; }
     .spinner { width: 16px; height: 16px; border: 2px solid #333; border-top-color: var(--cream); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .success-wrap { width: 100%; max-width: 480px; padding: 40px 20px 80px; display: none; flex-direction: column; gap: 24px; align-items: center; }
-    .success-icon { width: 72px; height: 72px; border-radius: 50%; background: var(--cream); display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--black); animation: pop 0.4s ease; }
-    @keyframes pop { 0%{transform:scale(0.5);opacity:0;} 100%{transform:scale(1);opacity:1;} }
-    .success-title { font-size: 36px; font-weight: 900; letter-spacing: 2px; text-align: center; color: var(--cream); }
-    .code-box { width: 100%; background: var(--gray-dark); border: 2px solid var(--cream); border-radius: 16px; padding: 28px 20px; text-align: center; }
-    .code-kit-name { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
-    .code-number { font-size: 72px; font-weight: 900; letter-spacing: 12px; color: var(--cream); line-height: 1; margin: 8px 0; }
-    .code-hint { font-size: 13px; color: var(--text-muted); margin-top: 12px; line-height: 1.7; }
-    .sms-badge { background: var(--gray-dark); border: 1px solid var(--cream-border); border-radius: 8px; padding: 12px 16px; font-size: 12px; color: var(--text-muted); text-align: center; width: 100%; }
-    .success-notice { width: 100%; background: #0d0d00; border-left: 3px solid var(--cream); border-radius: 4px; padding: 14px 16px; font-size: 12px; color: #999; line-height: 1.9; }
-    .success-notice strong { color: var(--cream); }
   </style>
 </head>
 <body>
@@ -133,20 +143,22 @@
     </div>
 
     <div class="kit-card fade-in">
-      <div class="kit-info">
-        <div class="kit-label">키트 구성</div>
-        <div class="kit-items">
-          <div class="kit-item"><div class="kit-dot"></div><span>포터블 듀얼 모니터</span></div>
-          <div class="kit-item"><div class="kit-dot"></div><span>높이 조절 거치대</span></div>
-          <div class="kit-item"><div class="kit-dot"></div><span>C-Type 고속 충전 케이블</span></div>
+      <div class="kit-card-inner">
+        <div class="kit-info">
+          <div class="kit-label">키트 구성</div>
+          <div class="kit-items">
+            <div class="kit-item"><div class="kit-dot"></div><span>포터블 듀얼 모니터</span></div>
+            <div class="kit-item"><div class="kit-dot"></div><span>높이 조절 거치대</span></div>
+            <div class="kit-item"><div class="kit-dot"></div><span>C-Type 고속 충전 케이블</span></div>
+          </div>
         </div>
-        <div class="kit-divider"></div>
-        <div class="kit-price-row">
-          <span class="kit-price-label">1회 이용 금액</span>
-          <span class="kit-price">4,800원</span>
-        </div>
+        <img class="bag-img" src="./bag.png" alt="작업 키트" />
       </div>
-      <img class="bag-img" src="./bag.png" alt="작업 키트" />
+      <div class="kit-divider"></div>
+      <div class="kit-price-row">
+        <span class="kit-price-label">1회 이용 금액</span>
+        <span class="kit-price">4,800원</span>
+      </div>
     </div>
 
     <div class="notice fade-in">
@@ -213,20 +225,22 @@
       <div class="section-subtitle" style="margin-top:6px; line-height:1.7;">아래 버튼을 눌러 결제를 완료해주세요<br>결제 완료 후 키트 비밀번호가 문자로 발송됩니다</div>
     </div>
     <div class="kit-card">
-      <div class="kit-info">
-        <div class="kit-label">키트 이용</div>
-        <div class="kit-items">
-          <div class="kit-item"><div class="kit-dot"></div><span>포터블 듀얼 모니터</span></div>
-          <div class="kit-item"><div class="kit-dot"></div><span>높이 조절 거치대</span></div>
-          <div class="kit-item"><div class="kit-dot"></div><span>C-Type 고속 충전 케이블</span></div>
+      <div class="kit-card-inner">
+        <div class="kit-info">
+          <div class="kit-label">키트 이용</div>
+          <div class="kit-items">
+            <div class="kit-item"><div class="kit-dot"></div><span>포터블 듀얼 모니터</span></div>
+            <div class="kit-item"><div class="kit-dot"></div><span>높이 조절 거치대</span></div>
+            <div class="kit-item"><div class="kit-dot"></div><span>C-Type 고속 충전 케이블</span></div>
+          </div>
         </div>
-        <div class="kit-divider"></div>
-        <div class="kit-price-row">
-          <span class="kit-price-label">결제 금액</span>
-          <span class="kit-price">4,800원</span>
-        </div>
+        <img class="bag-img" src="./bag.png" alt="작업 키트" />
       </div>
-      <img class="bag-img" src="./bag.png" alt="작업 키트" />
+      <div class="kit-divider"></div>
+      <div class="kit-price-row">
+        <span class="kit-price-label">결제 금액</span>
+        <span class="kit-price">4,800원</span>
+      </div>
     </div>
     <div class="loading" id="payLoading"><div class="spinner"></div> 결제창 연결 중...</div>
     <button class="btn btn-primary" onclick="requestPayment()" id="payBtn">결제하기</button>
