@@ -4,6 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>작업실 SEOUL — 작업 키트</title>
+
+  <!-- ✅ 링크 공유 썸네일 / 설명 (OG 태그) -->
+  <meta property="og:title" content="작업실 SEOUL" />
+  <meta property="og:description" content="Working Kit Rental Service" />
+  <meta property="og:image" content="https://jakupsil-seoul.co.kr/logo.png" />
+  <meta property="og:url" content="https://jakupsil-seoul.co.kr" />
+  <meta property="og:type" content="website" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="작업실 SEOUL" />
+  <meta name="twitter:description" content="Working Kit Rental Service" />
+  <meta name="twitter:image" content="https://jakupsil-seoul.co.kr/logo.png" />
+
   <style>
     @font-face {
       font-family: 'SUIT';
@@ -53,30 +66,29 @@
       border: 1px solid var(--cream-border);
       border-radius: 14px;
       padding: 20px;
-      position: relative;
-      overflow: hidden;
     }
-    .kit-card-inner {
+    .kit-top {
       display: flex;
-      gap: 16px;
       align-items: flex-start;
+      gap: 12px;
     }
-    .kit-info { flex: 1; position: relative; z-index: 1; }
+    .kit-info { flex: 1; }
     .kit-label { font-size: 10px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
-    .kit-items { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .kit-items { display: flex; flex-direction: column; gap: 6px; }
     .kit-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--cream); }
     .kit-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--cream); flex-shrink: 0; }
-    .kit-divider { height: 1px; background: var(--cream-border); margin-bottom: 12px; clear: both; }
-    .kit-price-row { display: flex; justify-content: space-between; align-items: center; }
-    .kit-price-label { font-size: 11px; color: var(--text-muted); }
-    .kit-price { font-size: 24px; font-weight: 900; color: var(--cream); letter-spacing: -0.5px; }
     .bag-img {
-      width: 110px;
-      height: 110px;
+      width: 120px;
+      height: auto;
       object-fit: contain;
       flex-shrink: 0;
       mix-blend-mode: lighten;
+      align-self: center;
     }
+    .kit-divider { height: 1px; background: var(--cream-border); margin: 16px 0 12px 0; }
+    .kit-price-row { display: flex; justify-content: space-between; align-items: center; }
+    .kit-price-label { font-size: 11px; color: var(--text-muted); }
+    .kit-price { font-size: 24px; font-weight: 900; color: var(--cream); letter-spacing: -0.5px; }
 
     .fade-in { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
@@ -143,7 +155,7 @@
     </div>
 
     <div class="kit-card fade-in">
-      <div class="kit-card-inner">
+      <div class="kit-top">
         <div class="kit-info">
           <div class="kit-label">키트 구성</div>
           <div class="kit-items">
@@ -225,7 +237,7 @@
       <div class="section-subtitle" style="margin-top:6px; line-height:1.7;">아래 버튼을 눌러 결제를 완료해주세요<br>결제 완료 후 키트 비밀번호가 문자로 발송됩니다</div>
     </div>
     <div class="kit-card">
-      <div class="kit-card-inner">
+      <div class="kit-top">
         <div class="kit-info">
           <div class="kit-label">키트 이용</div>
           <div class="kit-items">
