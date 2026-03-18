@@ -56,7 +56,7 @@
     .kit-price-row { display: flex; justify-content: space-between; align-items: center; }
     .kit-price-label { font-size: 11px; color: var(--text-muted); }
     .kit-price { font-size: 24px; font-weight: 900; color: var(--cream); letter-spacing: -0.5px; }
-    .bag-img { width: 100px; height: 100px; object-fit: contain; flex-shrink: 0; mix-blend-mode: lighten; margin-top: -12px; }
+    .bag-img { width: 100px; height: 100px; object-fit: contain; flex-shrink: 0; }
     .fade-in { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
     .notice { background: #0d0d00; border-left: 3px solid var(--cream); border-radius: 4px; padding: 14px 16px; font-size: 12px; color: #999; line-height: 1.8; }
@@ -104,28 +104,34 @@
 </head>
 <body>
 
+<!-- HERO -->
 <div class="hero">
-  <img class="hero-bg" src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAKIB9ADASIAAhEBAxEB/8QAHAAAAgMBAQEBAAAAAAAAAAAAAQIAAwQFBgcI/8QAQhAAAgIBAwMEAQIFAwIFAwALAQIAEQMEEiExQVEFEyJhcTKBBhQjQpFSobHB0RUzYnLhJEOCJVOSNHPw8RaDomT/xAAZAQEBAQEBAQAAAAAAAAAAAAAAAQIDBAX/xAAqEQEBAAICAgIDAAMAAQUBAAAAAQIRITEDEkFREyIyBGFxQiMzUoGhkf/aAAwDAQACEQMRAD8A/P7N8fivSFWtegB78SWQDxYuBdxf9HE+Q+kLmsZYkcxUJ9sMW5kyWxokc" alt="작업실 SEOUL" />
+  <img class="hero-bg" src="./hero.png" alt="작업실 SEOUL" />
   <div class="hero-overlay"></div>
 </div>
 
+<!-- LOGO -->
 <div class="logo-wrap">
-  <img class="logo-img" src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/" alt="작업실 SEOUL 로고" />
+  <img class="logo-img" src="./logo.png" alt="작업실 SEOUL 로고" />
 </div>
 
+<!-- STEP DOTS -->
 <div class="step-dots">
   <div class="dot active" id="dot0"></div>
   <div class="dot" id="dot1"></div>
   <div class="dot" id="dot2"></div>
 </div>
 
+<!-- MAIN CONTENT -->
 <div class="container">
+
   <!-- STEP 1 -->
   <div class="step active" id="step1">
     <div class="fade-in">
       <div class="section-title">작업실 SEOUL : 작업 키트</div>
       <div class="section-subtitle" style="margin-top:4px;">Working Kit Rental Service</div>
     </div>
+
     <div class="kit-card fade-in">
       <div class="kit-info">
         <div class="kit-label">키트 구성</div>
@@ -140,13 +146,15 @@
           <span class="kit-price">4,800원</span>
         </div>
       </div>
-      <img class="bag-img" src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/" alt="작업 키트" />
+      <img class="bag-img" src="./bag.png" alt="작업 키트" />
     </div>
+
     <div class="notice fade-in">
       키트는 <strong>작업실 외 분출이 불가합니다!</strong><br>
       반납 시 패키지 구성품을 키트에 넣고 <strong>반드시 잠근 후 반납</strong>해주세요!<br>
       반납하지 않을 시, <strong>향후 동일 서비스 이용이 불가</strong>할 수 있습니다.
     </div>
+
     <div class="fade-in">
       <div class="rental-title">대여하기</div>
       <div class="rental-desc">키트 코드를 확인하고, <strong>동일한 상품을 선택</strong> 후, 결제해주세요!</div>
@@ -165,6 +173,7 @@
         <button class="kit-btn" onclick="selectKit(this,'TONY-004')">TONY-004</button>
       </div>
     </div>
+
     <div class="form-group fade-in">
       <label class="form-label">휴대폰 번호</label>
       <div class="input-row">
@@ -217,66 +226,169 @@
           <span class="kit-price">4,800원</span>
         </div>
       </div>
-      <img class="bag-img" src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/" alt="작업 키트" />
+      <img class="bag-img" src="./bag.png" alt="작업 키트" />
     </div>
     <div class="loading" id="payLoading"><div class="spinner"></div> 결제창 연결 중...</div>
     <button class="btn btn-primary" onclick="requestPayment()" id="payBtn">결제하기</button>
     <button class="btn btn-outline" onclick="goStep(1)">처음으로</button>
   </div>
+
 </div>
 
 <script src="https://js.tosspayments.com/v1/payment"></script>
 <script>
-  const SERVER_URL="https://jakupsil-seoul.co.kr";
-  const TOSS_CLIENT_KEY="test_ck_XZYkKL4MrjoA5wYqGkWa80zJwlEW";
-  const PACKAGE_PRICE=4800;
-  const PACKAGE_NAME="작업실 SEOUL 작업 키트";
-  let userPhone="",selectedKitCode="",timerInterval=null,tossPayments=null;
+  const SERVER_URL = "https://jakupsil-seoul.co.kr";
+  const TOSS_CLIENT_KEY = "test_ck_XZYkKL4MrjoA5wYqGkWa80zJwlEW";
+  const PACKAGE_PRICE = 4800;
+  const PACKAGE_NAME = "작업실 SEOUL 작업 키트";
 
-  document.getElementById("phone").addEventListener("input",function(e){
-    let v=e.target.value.replace(/\D/g,"");
-    if(v.length>11)v=v.slice(0,11);
-    if(v.length>=8)v=v.slice(0,3)+"-"+v.slice(3,7)+"-"+v.slice(7);
-    else if(v.length>=4)v=v.slice(0,3)+"-"+v.slice(3);
-    e.target.value=v;
+  let userPhone = "";
+  let selectedKitCode = "";
+  let timerInterval = null;
+  let tossPayments = null;
+
+  document.getElementById("phone").addEventListener("input", function(e) {
+    let val = e.target.value.replace(/\D/g, "");
+    if (val.length > 11) val = val.slice(0, 11);
+    if (val.length >= 8) val = val.slice(0,3) + "-" + val.slice(3,7) + "-" + val.slice(7);
+    else if (val.length >= 4) val = val.slice(0,3) + "-" + val.slice(3);
+    e.target.value = val;
   });
 
-  function selectKit(el,code){
-    document.querySelectorAll(".kit-btn").forEach(b=>b.classList.remove("selected"));
-    el.classList.add("selected");selectedKitCode=code;
+  function selectKit(el, code) {
+    document.querySelectorAll(".kit-btn").forEach(b => b.classList.remove("selected"));
+    el.classList.add("selected");
+    selectedKitCode = code;
     document.getElementById("kitError").classList.remove("show");
   }
-  function updateDots(step){document.querySelectorAll(".dot").forEach((d,i)=>{d.classList.toggle("active",i<step);});}
-  function goStep(n){
-    document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
-    document.getElementById("step"+n).classList.add("active");updateDots(n);window.scrollTo(0,0);
-    if(n===3)initToss();
+
+  function updateDots(step) {
+    document.querySelectorAll(".dot").forEach((d, i) => {
+      d.classList.toggle("active", i < step);
+    });
   }
-  function initToss(){try{tossPayments=TossPayments(TOSS_CLIENT_KEY);}catch(e){alert("결제 초기화 실패: "+e.message);}}
-  async function requestPayment(){
-    if(!tossPayments){alert("결제 초기화 중입니다. 잠시 후 다시 시도해주세요.");return;}
-    const orderId="order_"+Date.now();
-    document.getElementById("payLoading").classList.add("show");document.getElementById("payBtn").disabled=true;
-    try{await tossPayments.requestPayment("카드",{amount:PACKAGE_PRICE,orderId:orderId,orderName:PACKAGE_NAME+" "+selectedKitCode,customerMobilePhone:userPhone,successUrl:SERVER_URL+"/success?phone="+userPhone+"&kit="+encodeURIComponent(selectedKitCode),failUrl:SERVER_URL+"/",});}catch(e){document.getElementById("payLoading").classList.remove("show");document.getElementById("payBtn").disabled=false;if(e.code!=="USER_CANCEL")alert("결제 중 오류가 발생했습니다: "+e.message);}
+
+  function goStep(n) {
+    document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+    document.getElementById("step" + n).classList.add("active");
+    updateDots(n);
+    window.scrollTo(0, 0);
+    if (n === 3) initToss();
   }
-  async function sendSMS(){
-    if(!selectedKitCode){document.getElementById("kitError").classList.add("show");return;}
-    const phone=document.getElementById("phone").value.replace(/-/g,"");
-    const err=document.getElementById("phoneError"),loading=document.getElementById("smsLoading");
-    if(!/^010\d{8}$/.test(phone)){err.classList.add("show");return;}
-    err.classList.remove("show");userPhone=phone;document.getElementById("smsBtn").disabled=true;loading.classList.add("show");
-    try{const res=await fetch(SERVER_URL+"/api/send-sms",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone}),});const data=await res.json();if(data.success){loading.classList.remove("show");document.getElementById("step2Desc").textContent=phone.replace(/(\d{3})(\d{4})(\d{4})/,"$1-$2-$3")+" 으로 인증번호를 발송했습니다";goStep(2);startTimer();}else{throw new Error("발송 실패");}}catch(e){loading.classList.remove("show");document.getElementById("smsBtn").disabled=false;alert("인증번호 발송에 실패했습니다. 다시 시도해주세요.");}
+
+  function initToss() {
+    try { tossPayments = TossPayments(TOSS_CLIENT_KEY); } catch(e) { alert("결제 초기화 실패: " + e.message); }
   }
-  function startTimer(){let sec=120;clearInterval(timerInterval);timerInterval=setInterval(()=>{sec--;const m=Math.floor(sec/60),s=sec%60;document.getElementById("timer").textContent=m+":"+String(s).padStart(2,"0");if(sec<=0){clearInterval(timerInterval);document.getElementById("timer").textContent="만료됨";}},1000);}
-  async function verifyCode(){
-    const code=document.getElementById("verifyCode").value,err=document.getElementById("codeError"),loading=document.getElementById("verifyLoading");
-    if(code.length!==6){err.classList.add("show");return;}err.classList.remove("show");loading.classList.add("show");
-    try{const res=await fetch(SERVER_URL+"/api/verify-sms",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone:userPhone,code}),});const data=await res.json();loading.classList.remove("show");if(data.success){clearInterval(timerInterval);goStep(3);}else{err.classList.add("show");}}catch(e){loading.classList.remove("show");alert("확인에 실패했습니다. 다시 시도해주세요.");}
+
+  async function requestPayment() {
+    if (!tossPayments) { alert("결제 초기화 중입니다. 잠시 후 다시 시도해주세요."); return; }
+    const orderId = "order_" + Date.now();
+    document.getElementById("payLoading").classList.add("show");
+    document.getElementById("payBtn").disabled = true;
+    try {
+      await tossPayments.requestPayment("카드", {
+        amount: PACKAGE_PRICE,
+        orderId: orderId,
+        orderName: PACKAGE_NAME + " " + selectedKitCode,
+        customerMobilePhone: userPhone,
+        successUrl: SERVER_URL + "/success?phone=" + userPhone + "&kit=" + encodeURIComponent(selectedKitCode),
+        failUrl: SERVER_URL + "/",
+      });
+    } catch(e) {
+      document.getElementById("payLoading").classList.remove("show");
+      document.getElementById("payBtn").disabled = false;
+      if (e.code !== "USER_CANCEL") alert("결제 중 오류가 발생했습니다: " + e.message);
+    }
   }
-  function resendSMS(){document.getElementById("verifyCode").value="";document.getElementById("smsBtn").disabled=false;sendSMS();}
-  const observer=new IntersectionObserver((entries)=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add("visible");observer.unobserve(entry.target);}});},{threshold:0.12});
-  function initFadeIn(){document.querySelectorAll(".fade-in").forEach((el,i)=>{el.style.transitionDelay=(i*0.08)+"s";observer.observe(el);});}
-  window.addEventListener("DOMContentLoaded",initFadeIn);
+
+  async function sendSMS() {
+    if (!selectedKitCode) { document.getElementById("kitError").classList.add("show"); return; }
+    const phone = document.getElementById("phone").value.replace(/-/g, "");
+    const err = document.getElementById("phoneError");
+    const loading = document.getElementById("smsLoading");
+    if (!/^010\d{8}$/.test(phone)) { err.classList.add("show"); return; }
+    err.classList.remove("show");
+    userPhone = phone;
+    document.getElementById("smsBtn").disabled = true;
+    loading.classList.add("show");
+    try {
+      const res = await fetch(SERVER_URL + "/api/send-sms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        loading.classList.remove("show");
+        document.getElementById("step2Desc").textContent = phone.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3") + " 으로 인증번호를 발송했습니다";
+        goStep(2);
+        startTimer();
+      } else { throw new Error("발송 실패"); }
+    } catch(e) {
+      loading.classList.remove("show");
+      document.getElementById("smsBtn").disabled = false;
+      alert("인증번호 발송에 실패했습니다. 다시 시도해주세요.");
+    }
+  }
+
+  function startTimer() {
+    let sec = 120;
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      sec--;
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      document.getElementById("timer").textContent = m + ":" + String(s).padStart(2, "0");
+      if (sec <= 0) { clearInterval(timerInterval); document.getElementById("timer").textContent = "만료됨"; }
+    }, 1000);
+  }
+
+  async function verifyCode() {
+    const code = document.getElementById("verifyCode").value;
+    const err = document.getElementById("codeError");
+    const loading = document.getElementById("verifyLoading");
+    if (code.length !== 6) { err.classList.add("show"); return; }
+    err.classList.remove("show");
+    loading.classList.add("show");
+    try {
+      const res = await fetch(SERVER_URL + "/api/verify-sms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: userPhone, code }),
+      });
+      const data = await res.json();
+      loading.classList.remove("show");
+      if (data.success) { clearInterval(timerInterval); goStep(3); }
+      else { err.classList.add("show"); }
+    } catch(e) {
+      loading.classList.remove("show");
+      alert("확인에 실패했습니다. 다시 시도해주세요.");
+    }
+  }
+
+  function resendSMS() {
+    document.getElementById("verifyCode").value = "";
+    document.getElementById("smsBtn").disabled = false;
+    sendSMS();
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  function initFadeIn() {
+    document.querySelectorAll(".fade-in").forEach((el, i) => {
+      el.style.transitionDelay = (i * 0.08) + "s";
+      observer.observe(el);
+    });
+  }
+
+  window.addEventListener("DOMContentLoaded", initFadeIn);
 </script>
 </body>
 </html>
