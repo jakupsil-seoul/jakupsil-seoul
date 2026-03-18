@@ -1,67 +1,83 @@
-// api/confirm-payment.js
-// 토스 결제 확인 + 비번 문자 발송
+const crypto = require("crypto");
 
-export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).end();
+module.exports = async (req, res) => {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
-  const { paymentKey, orderId, amount, phone } = req.body;
+  const { paymentKey, orderId, amount, phone, kit } = req.body;
 
-  const TOSS_SECRET = process.env.TOSS_SECRET_KEY;
-  const SOLAPI_KEY = process.env.SOLAPI_API_KEY;
-  const SOLAPI_SECRET = process.env.SOLAPI_API_SECRET;
-  const SENDER_PHONE = process.env.SENDER_PHONE;
-  const PASSWORD = process.env.BAG_PASSWORD || "1234"; // 007가방 비번
+  // 1) 토스 결제 승인
+  const secretKey = process.env.TOSS_SECRET_KEY;
+  const basicToken = Buffer.from(secretKey + ":").toString("base64");
 
-  // 1. 토스 결제 승인
   try {
-    const confirmRes = await fetch("https://api.tosspayments.com/v1/payments/confirm", {
+    const tossRes = await fetch("https://api.tosspayments.com/v1/payments/confirm", {
       method: "POST",
       headers: {
-        Authorization: "Basic " + Buffer.from(TOSS_SECRET + ":").toString("base64"),
+        Authorization: `Basic ${basicToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ paymentKey, orderId, amount }),
     });
 
-    const payData = await confirmRes.json();
+    const tossData = await tossRes.json();
 
-    if (payData.code) {
-      return res.status(400).json({ success: false, message: payData.message });
-    }
-
-    // 2. 비번 문자 발송
-    try {
-      const crypto = await import("crypto");
-      const date = new Date().toISOString();
-      const salt = Math.random().toString(36).substring(2);
-      const signature = crypto.default
-        .createHmac("sha256", SOLAPI_SECRET)
-        .update(date + salt)
-        .digest("hex");
-
-      await fetch("https://api.solapi.com/messages/v4/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `HMAC-SHA256 apiKey=${SOLAPI_KEY}, date=${date}, salt=${salt}, signature=${signature}`,
-        },
-        body: JSON.stringify({
-          message: {
-            to: phone,
-            from: SENDER_PHONE,
-            text: `[작업실 SEOUL] 렌탈 결제가 완료됐습니다.\n\n007가방 비밀번호: ${PASSWORD}\n\n반납 시 가방에 넣고 잠근 후 매대에 놓아주세요.`,
-          },
-        }),
+    if (!tossRes.ok) {
+      return res.status(400).json({
+        success: false,
+        message: tossData.message || "결제 승인 실패",
       });
-    } catch (smsErr) {
-      console.error("비번 문자 발송 실패:", smsErr);
-      // 문자 실패해도 결제는 성공 처리
     }
 
-    return res.status(200).json({ success: true, password: PASSWORD });
+    // 2) 결제 성공 → 비밀번호 문자 발송
+    const bagPassword = process.env.BAG_PASSWORD || "1234";
+    const kitCode = kit || "UNKNOWN";
 
-  } catch (e) {
-    console.error("결제 확인 실패:", e);
-    return res.status(500).json({ success: false, message: "결제 확인 실패" });
+    const smsText =
+      `[작업실 SEOUL] 결제가 완료되었습니다.\n` +
+      `#${kitCode}\n` +
+      `비밀번호 : ${bagPassword}\n` +
+      `반납 시 반드시 원상태로 잠근 후 매대에 놓아주시기 바랍니다.`;
+
+    // 솔라피 API 호출
+    const apiKey = process.env.SOLAPI_API_KEY;
+    const apiSecret = process.env.SOLAPI_API_SECRET;
+    const senderPhone = process.env.SENDER_PHONE;
+
+    const date = new Date().toISOString();
+    const salt = crypto.randomBytes(32).toString("hex");
+    const hmac = crypto.createHmac("sha256", apiSecret);
+    hmac.update(date + salt);
+    const signature = hmac.digest("hex");
+
+    const smsRes = await fetch("https://api.solapi.com/messages/v4/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `HMAC-SHA256 apiKey=${apiKey}, date=${date}, salt=${salt}, signature=${signature}`,
+      },
+      body: JSON.stringify({
+        message: {
+          to: phone,
+          from: senderPhone,
+          text: smsText,
+        },
+      }),
+    });
+
+    const smsData = await smsRes.json();
+
+    return res.status(200).json({
+      success: true,
+      password: bagPassword,
+      kit: kitCode,
+      sms: smsData,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: err.message || "서버 오류",
+    });
   }
-}
+};
