@@ -69,10 +69,10 @@
     }
     .kit-top {
       display: flex;
-      align-items: flex-start;
-      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
     }
-    .kit-info { flex: 1; }
+    .kit-info { flex: 1; min-width: 0; }
     .kit-label { font-size: 10px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
     .kit-items { display: flex; flex-direction: column; gap: 6px; }
     .kit-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--cream); }
@@ -83,7 +83,7 @@
       object-fit: contain;
       flex-shrink: 0;
       mix-blend-mode: lighten;
-      align-self: center;
+      margin-left: auto;
     }
     .kit-divider { height: 1px; background: var(--cream-border); margin: 16px 0 12px 0; }
     .kit-price-row { display: flex; justify-content: space-between; align-items: center; }
