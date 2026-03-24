@@ -5,13 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>작업실 SEOUL — 작업 키트</title>
 
-  <!-- ✅ 링크 공유 썸네일 / 설명 (OG 태그) -->
   <meta property="og:title" content="작업실 SEOUL" />
   <meta property="og:description" content="Working Kit Rental Service" />
   <meta property="og:image" content="https://jakupsil-seoul.co.kr/logo.png" />
   <meta property="og:url" content="https://jakupsil-seoul.co.kr" />
   <meta property="og:type" content="website" />
-
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="작업실 SEOUL" />
   <meta name="twitter:description" content="Working Kit Rental Service" />
@@ -28,7 +26,6 @@
     :root {
       --cream: #E4DAC3;
       --black: #000000;
-      --black-soft: #0d0d0d;
       --gray-dark: #1a1a1a;
       --gray-mid: #2a2a2a;
       --text-muted: #666;
@@ -53,39 +50,21 @@
     .step-dots { display: flex; gap: 8px; justify-content: center; padding: 0 0 28px; background: var(--black); }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gray-mid); transition: background 0.3s; }
     .dot.active { background: var(--cream); }
-    .container { width: 100%; max-width: 480px; padding: 0 20px 80px; }
+    .container { width: 100%; max-width: 480px; padding: 0 20px 40px; }
     .step { display: none; flex-direction: column; gap: 20px; animation: fadeUp 0.35s ease; }
     .step.active { display: flex; }
     @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
     .section-title { font-size: 22px; font-weight: 700; color: var(--cream); margin-bottom: 4px; }
     .section-subtitle { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); }
 
-    /* ── 키트 카드 ── */
-    .kit-card {
-      background: var(--gray-dark);
-      border: 1px solid var(--cream-border);
-      border-radius: 14px;
-      padding: 20px;
-    }
-    .kit-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-    }
+    .kit-card { background: var(--gray-dark); border: 1px solid var(--cream-border); border-radius: 14px; padding: 20px; }
+    .kit-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
     .kit-info { flex: 1; min-width: 0; }
     .kit-label { font-size: 10px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
     .kit-items { display: flex; flex-direction: column; gap: 6px; }
     .kit-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--cream); }
     .kit-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--cream); flex-shrink: 0; }
-    .bag-img {
-      width: 90px;
-      height: auto;
-      object-fit: contain;
-      flex-shrink: 0;
-      mix-blend-mode: lighten;
-      align-self: flex-end;
-    }
+    .bag-img { width: 90px; height: auto; object-fit: contain; flex-shrink: 0; align-self: flex-end; }
     .kit-divider { height: 1px; background: var(--cream-border); margin: 16px 0 12px 0; }
     .kit-price-row { display: flex; justify-content: space-between; align-items: flex-end; }
     .kit-price-label { font-size: 11px; color: var(--text-muted); }
@@ -123,6 +102,118 @@
     .loading.show { display: flex; }
     .spinner { width: 16px; height: 16px; border: 2px solid #333; border-top-color: var(--cream); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── 이용약관 팝업 ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-box {
+      background: var(--gray-dark);
+      border: 1px solid var(--cream-border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 420px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: fadeUp 0.3s ease;
+    }
+    .modal-header {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--cream-border);
+    }
+    .modal-header h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--cream);
+    }
+    .modal-body {
+      padding: 16px 20px;
+      overflow-y: auto;
+      flex: 1;
+      font-size: 12px;
+      color: #aaa;
+      line-height: 1.9;
+      -webkit-overflow-scrolling: touch;
+    }
+    .modal-body .terms-section {
+      margin-bottom: 16px;
+    }
+    .modal-body .terms-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 4px;
+    }
+    .modal-footer {
+      padding: 14px 20px 18px;
+      border-top: 1px solid var(--cream-border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .agree-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+    .agree-row input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--cream-border);
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .agree-row input[type="checkbox"]:checked {
+      background: var(--cream);
+      border-color: var(--cream);
+    }
+    .agree-row input[type="checkbox"]:checked::after {
+      content: '✓';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--black);
+      font-size: 14px;
+      font-weight: 900;
+    }
+    .agree-row label {
+      font-size: 13px;
+      color: var(--cream);
+      cursor: pointer;
+    }
+    .modal-footer .btn { font-size: 14px; padding: 14px; }
+
+    /* ── 푸터 ── */
+    .site-footer {
+      width: 100%;
+      max-width: 480px;
+      border-top: 1px solid var(--cream-border);
+      padding: 28px 20px 48px;
+      margin-top: 20px;
+    }
+    .footer-inner {
+      font-size: 10px;
+      color: #444;
+      line-height: 2.2;
+    }
+    .footer-inner span { display: block; }
+    .footer-copyright { margin-top: 10px; color: #333; }
   </style>
 </head>
 <body>
@@ -203,7 +294,7 @@
       <label class="form-label">휴대폰 번호</label>
       <div class="input-row">
         <input type="tel" id="phone" placeholder="010-0000-0000" maxlength="13" />
-        <button class="btn btn-primary btn-sm" onclick="sendSMS()" id="smsBtn">인증받기</button>
+        <button class="btn btn-primary btn-sm" onclick="onClickSendSMS()" id="smsBtn">인증받기</button>
       </div>
       <div class="error-msg" id="phoneError">올바른 번호를 입력해주세요.</div>
       <div class="error-msg" id="kitError">키트 코드를 선택해주세요.</div>
@@ -262,6 +353,61 @@
 
 </div>
 
+<!-- ── 이용약관 팝업 ── -->
+<div class="modal-overlay" id="termsModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>작업실 SEOUL 이용약관</h3>
+    </div>
+    <div class="modal-body">
+      <div class="terms-section">
+        <div class="terms-title">제1조 (서비스 이용)</div>
+        본 서비스는 주식회사 인피니티크루가 운영하는 작업실 내 작업 키트(포터블 듀얼 모니터, 높이 조절 거치대, C-Type 고속 충전 케이블)를 1회 대여하는 서비스입니다.<br>
+        키트는 작업실 외 반출이 불가하며, 이용 후 반드시 원상태로 잠근 후 지정된 매대에 반납하여야 합니다.
+      </div>
+      <div class="terms-section">
+        <div class="terms-title">제2조 (개인정보 수집 및 이용)</div>
+        수집 항목 : 휴대폰 번호<br>
+        수집 목적 : 본인 인증 및 키트 비밀번호 발송<br>
+        보유 기간 : 결제일로부터 90일 후 자동 파기<br>
+        수집된 개인정보는 상기 목적 외에 사용되지 않습니다.
+      </div>
+      <div class="terms-section">
+        <div class="terms-title">제3조 (환불 및 교환)</div>
+        본 서비스는 현장 이용 서비스의 특성상 결제 완료 후 원칙적으로 환불이 불가합니다.<br><br>
+        단, 다음의 경우 교환 또는 환불이 가능합니다.<br>
+        ① 키트 구성품이 누락되었거나 상품 설명과 상이한 경우, 관리자에게 문의 시 잔여 키트 중 다른 모델로 교환하여 드립니다.<br>
+        ② 교환 가능한 잔여 키트가 없는 경우에 한하여 결제 금액 전액을 환불 처리합니다.<br><br>
+        환불은 결제 수단과 동일한 방식으로 처리되며, 카드 결제 취소의 경우 카드사 사정에 따라 3~5 영업일이 소요될 수 있습니다.
+      </div>
+      <div class="terms-section">
+        <div class="terms-title">제4조 (미반납 시 제재)</div>
+        이용 종료 후 키트를 반납하지 않을 경우 향후 동일 서비스의 이용이 제한됩니다.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <label class="agree-row" for="agreeCheck">
+        <input type="checkbox" id="agreeCheck" />
+        <span>위 이용약관에 동의합니다.</span>
+      </label>
+      <button class="btn btn-primary" id="agreeBtn" disabled onclick="agreeAndSend()">동의 후 인증받기</button>
+      <button class="btn btn-outline" onclick="closeTerms()" style="font-size:13px; padding:12px;">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 푸터 ── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>상호명 : 주식회사 인피니티크루</span>
+    <span>대표자명 : Matthew Kang</span>
+    <span>사업자등록번호 : 506-86-03756</span>
+    <span>사업장주소 : 서울특별시 동대문구 회기동 25</span>
+    <span>유선전화번호 : 070-8098-2459</span>
+    <span class="footer-copyright">ⓒ 주식회사 인피니티크루. All rights reserved.</span>
+  </div>
+</footer>
+
 <script src="https://js.tosspayments.com/v1/payment"></script>
 <script>
   const SERVER_URL = "https://jakupsil-seoul.co.kr";
@@ -273,13 +419,20 @@
   let selectedKitCode = "";
   let timerInterval = null;
   let tossPayments = null;
+  let termsAgreed = false;
 
+  // 전화번호 자동 포맷
   document.getElementById("phone").addEventListener("input", function(e) {
     let val = e.target.value.replace(/\D/g, "");
     if (val.length > 11) val = val.slice(0, 11);
     if (val.length >= 8) val = val.slice(0,3) + "-" + val.slice(3,7) + "-" + val.slice(7);
     else if (val.length >= 4) val = val.slice(0,3) + "-" + val.slice(3);
     e.target.value = val;
+  });
+
+  // 약관 체크박스 → 버튼 활성화
+  document.getElementById("agreeCheck").addEventListener("change", function() {
+    document.getElementById("agreeBtn").disabled = !this.checked;
   });
 
   function selectKit(el, code) {
@@ -307,34 +460,38 @@
     try { tossPayments = TossPayments(TOSS_CLIENT_KEY); } catch(e) { alert("결제 초기화 실패: " + e.message); }
   }
 
-  async function requestPayment() {
-    if (!tossPayments) { alert("결제 초기화 중입니다. 잠시 후 다시 시도해주세요."); return; }
-    const orderId = "order_" + Date.now();
-    document.getElementById("payLoading").classList.add("show");
-    document.getElementById("payBtn").disabled = true;
-    try {
-      await tossPayments.requestPayment("카드", {
-        amount: PACKAGE_PRICE,
-        orderId: orderId,
-        orderName: PACKAGE_NAME + " " + selectedKitCode,
-        customerMobilePhone: userPhone,
-        successUrl: SERVER_URL + "/success?phone=" + userPhone + "&kit=" + encodeURIComponent(selectedKitCode),
-        failUrl: SERVER_URL + "/",
-      });
-    } catch(e) {
-      document.getElementById("payLoading").classList.remove("show");
-      document.getElementById("payBtn").disabled = false;
-      if (e.code !== "USER_CANCEL") alert("결제 중 오류가 발생했습니다: " + e.message);
+  // ── 인증받기 클릭 → 유효성 검사 → 약관 팝업 ──
+  function onClickSendSMS() {
+    if (!selectedKitCode) { document.getElementById("kitError").classList.add("show"); return; }
+    const phone = document.getElementById("phone").value.replace(/-/g, "");
+    if (!/^010\d{8}$/.test(phone)) { document.getElementById("phoneError").classList.add("show"); return; }
+    document.getElementById("phoneError").classList.remove("show");
+
+    // 이미 동의한 경우 바로 발송
+    if (termsAgreed) {
+      sendSMS();
+      return;
     }
+
+    // 약관 팝업 표시
+    document.getElementById("agreeCheck").checked = false;
+    document.getElementById("agreeBtn").disabled = true;
+    document.getElementById("termsModal").classList.add("show");
+  }
+
+  function closeTerms() {
+    document.getElementById("termsModal").classList.remove("show");
+  }
+
+  function agreeAndSend() {
+    termsAgreed = true;
+    closeTerms();
+    sendSMS();
   }
 
   async function sendSMS() {
-    if (!selectedKitCode) { document.getElementById("kitError").classList.add("show"); return; }
     const phone = document.getElementById("phone").value.replace(/-/g, "");
-    const err = document.getElementById("phoneError");
     const loading = document.getElementById("smsLoading");
-    if (!/^010\d{8}$/.test(phone)) { err.classList.add("show"); return; }
-    err.classList.remove("show");
     userPhone = phone;
     document.getElementById("smsBtn").disabled = true;
     loading.classList.add("show");
@@ -399,6 +556,28 @@
     sendSMS();
   }
 
+  async function requestPayment() {
+    if (!tossPayments) { alert("결제 초기화 중입니다. 잠시 후 다시 시도해주세요."); return; }
+    const orderId = "order_" + Date.now();
+    document.getElementById("payLoading").classList.add("show");
+    document.getElementById("payBtn").disabled = true;
+    try {
+      await tossPayments.requestPayment("카드", {
+        amount: PACKAGE_PRICE,
+        orderId: orderId,
+        orderName: PACKAGE_NAME + " " + selectedKitCode,
+        customerMobilePhone: userPhone,
+        successUrl: SERVER_URL + "/success?phone=" + userPhone + "&kit=" + encodeURIComponent(selectedKitCode),
+        failUrl: SERVER_URL + "/",
+      });
+    } catch(e) {
+      document.getElementById("payLoading").classList.remove("show");
+      document.getElementById("payBtn").disabled = false;
+      if (e.code !== "USER_CANCEL") alert("결제 중 오류가 발생했습니다: " + e.message);
+    }
+  }
+
+  // SCROLL FADE-IN
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
