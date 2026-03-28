@@ -14,6 +14,7 @@
   <meta name="twitter:title" content="작업실 SEOUL" />
   <meta name="twitter:description" content="Working Kit Rental Service" />
   <meta name="twitter:image" content="https://jakupsil-seoul.co.kr/logo.png" />
+  <meta name="format-detection" content="telephone=no, email=no, address=no" />
 
   <style>
     @font-face {
@@ -213,8 +214,15 @@
       color: #444;
       line-height: 2.2;
     }
-    .footer-inner span { display: block; }
-    .footer-copyright { margin-top: 10px; color: #333; }
+    .footer-inner span {
+      display: block;
+      color: #444 !important;
+      text-decoration: none !important;
+    }
+    .footer-copyright { margin-top: 10px; color: #333 !important; }
+
+    /* 모바일 자동 링크 감지(전화번호 등) 파란색 방지 */
+    .site-footer a { color: #444 !important; text-decoration: none !important; }
   </style>
 </head>
 <body>
